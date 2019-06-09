@@ -101,11 +101,3 @@ GameBoard.prototype.toString = function() {
   return stringBuffer.join("\n");
 };
 
-var board = new GameBoard();
-console.log(board.toString());
-board.makeMove(GridState.CROSS, [1, 2]);
-board.makeMove(GridState.CROSS, [1, 1]);
-board.makeMove(GridState.CROSS, [1, 0]);
-console.log(board.toString());
-console.log(board.isWinner(GridState.CROSS));
-
