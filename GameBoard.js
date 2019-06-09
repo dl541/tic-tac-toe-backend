@@ -4,6 +4,9 @@ class GameBoard {
   constructor() {
     this.length = 3;
     this.grids = this.constructBoardGrids();
+    this.stateCountInRows = [...Array(this.length).keys()].map(index => new StateCounter());
+    this.stateCountInCols = [...Array(this.length).keys()].map(index => new StateCounter());
+    this.stateCountInDiags =[...Array(2).keys()].map(index => new StateCounter());
   }
 
   constructBoardGrids() {
@@ -23,7 +26,27 @@ class GameBoard {
     this.grids[r][c].state = gridState;
   }
 
-  identifyWinner() {}
+  isWinner(gridState){
+      checkIfWinByRows(gridState)
+      checkIfWinByCols(gridState)
+      checkIfWinByDiags(gridState)
+  }
+
+  checkIfWinByRows(gridState){
+      for (var r = 0; r < this.length; r++){
+          this.checkIfWinByRows()
+      }
+  }
+
+  checkIfWinByRow(){
+
+  }
+}
+
+class StateCounter extends Map{
+    constructor(){
+        super([[GridState.CROSS, 0],[GridState.NAUGHT, 0]]);
+    }
 }
 
 GameBoard.prototype.toString = function() {
@@ -39,5 +62,5 @@ GameBoard.prototype.toString = function() {
 var board = new GameBoard();
 console.log(board.toString());
 board.setGridState(GridState.CROSS, [1,2]);
-board.setGridState(GridState.NAUGHT, [1,2]);
-console.log(board.toString());
+console.log(board.stateCountInRows);
+
