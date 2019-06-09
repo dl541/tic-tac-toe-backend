@@ -29,3 +29,8 @@ const GridState = {
   NAUGHT: "O",
   UNOCCUPIED: "?"
 };
+
+module.exports = {
+    GameBoardGrid: GameBoardGrid,
+    GridState: GridState
+}
