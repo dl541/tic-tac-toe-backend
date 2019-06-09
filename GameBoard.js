@@ -4,14 +4,14 @@ class GameBoard {
   constructor() {
     this.length = 3;
     this.grids = this.constructBoardGrids();
-    this.stateCountInRows = [...Array(this.length).keys()].map(
-      index => new StateCounter()
+    this.stateCountersForRows = [...Array(this.length).keys()].map(
+      index => new StateCounter(this.length)
     );
-    this.stateCountInCols = [...Array(this.length).keys()].map(
-      index => new StateCounter()
+    this.stateCountersForCols = [...Array(this.length).keys()].map(
+      index => new StateCounter(this.length)
     );
-    this.stateCountInDiags = [...Array(2).keys()].map(
-      index => new StateCounter()
+    this.stateCountersForDiags = [...Array(2).keys()].map(
+      index => new StateCounter(this.length)
     );
   }
 
@@ -44,48 +44,50 @@ class GameBoard {
   }
 
   updateStateCountInRows(gridState, row) {
-    var currentCount = this.stateCountInRows[row].get(gridState);
-    this.stateCountInRows[row].set(gridState, currentCount + 1);
+    var currentCount = this.stateCountersForRows[row].get(gridState);
+    this.stateCountersForRows[row].set(gridState, currentCount + 1);
   }
 
   updateStateCountInCols(gridState, col) {
-    var currentCount = this.stateCountInCols[col].get(gridState);
-    this.stateCountInCols[col].set(gridState, currentCount + 1);
+    var currentCount = this.stateCountersForCols[col].get(gridState);
+    this.stateCountersForCols[col].set(gridState, currentCount + 1);
   }
 
   updateStateCountInDiags(gridState, coordinate) {
     var [r, c] = coordinate;
     if (r == c) {
-        var currentCount = this.stateCountInDiags[0].get(gridState);
-      this.stateCountInDiags[0].set(gridState, currentCount + 1);
+        var currentCount = this.stateCountersForDiags[0].get(gridState);
+      this.stateCountersForDiags[0].set(gridState, currentCount + 1);
     }
 
     if (r == this.length - 1 - c) {
-        var currentCount = this.stateCountInDiags[1].get(gridState);
-      this.stateCountInDiags[1].set(gridState, currentCount + 1);
+        var currentCount = this.stateCountersForDiags[1].get(gridState);
+      this.stateCountersForDiags[1].set(gridState, currentCount + 1);
     }
   }
 
   isWinner(gridState) {
-    checkIfWinByRows(gridState);
-    checkIfWinByCols(gridState);
-    checkIfWinByDiags(gridState);
+    return this.isMaxLimitReachedInCounters(this.stateCountersForCols, gridState)||
+    this.isMaxLimitReachedInCounters(this.stateCountersForRows, gridState)||
+    this.isMaxLimitReachedInCounters(this.stateCountersForDiags, gridState)
   }
 
-  checkIfWinByRows(gridState) {
-    for (var r = 0; r < this.length; r++) {
-      this.checkIfWinByRows();
-    }
+  isMaxLimitReachedInCounters(counters, gridState){
+    return counters.some(counter => counter.isMaxLimitReached(gridState))
   }
 
-  checkIfWinByRow() {}
 }
 
 class StateCounter extends Map {
-  constructor() {
+  constructor(maxLimit) {
     super();
+    this.maxLimit = maxLimit;
     this.set(GridState.NAUGHT, 0);
     this.set(GridState.CROSS, 0);
+  }
+
+  isMaxLimitReached(gridState){
+      return this.get(gridState) === this.maxLimit;
   }
 }
 
@@ -102,7 +104,8 @@ GameBoard.prototype.toString = function() {
 var board = new GameBoard();
 console.log(board.toString());
 board.makeMove(GridState.CROSS, [1, 2]);
-console.log(board.stateCountInRows, board.stateCountInCols, board.stateCountInDiags);
+board.makeMove(GridState.CROSS, [1, 1]);
+board.makeMove(GridState.CROSS, [1, 0]);
+console.log(board.toString());
+console.log(board.isWinner(GridState.CROSS));
 
-board.makeMove(GridState.NAUGHT, [1, 1]);
-console.log(board.stateCountInRows, board.stateCountInCols, board.stateCountInDiags);
