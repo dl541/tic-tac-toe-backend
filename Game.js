@@ -37,7 +37,9 @@ class Game {
       this.displayGameState();
       var move = this.readPlayerMove();
       console.log(`The move is ${move}`);
-      this.updateGameState(move);
+      if (this.updateGameState(move)) {
+        this.rotateQueue();
+      }
     } while (!this.shouldTerminate());
   }
 
@@ -62,28 +64,37 @@ class Game {
   updateGameState(move) {
     var currentPlayer = this.playersQueue[0];
 
-    if (this.isMoveValid(move)){
-      this.gameBoard.makeMove(currentPlayer.symbol, move)
-      this.rotateQueue()
+    if (this.isMoveValid(move)) {
+      this.gameBoard.makeMove(currentPlayer.symbol, move);
+      return true;
+    } else {
+      return false;
     }
   }
 
-  isMoveValid(move){
-    if (!this.gameBoard.isCoordinateWithinBoundary(move)){
-      console.log("The move is out of boundary.")
-      return false
+  isMoveValid(move) {
+    if (!this.gameBoard.isCoordinateWithinBoundary(move)) {
+      console.log("The move is out of boundary.");
+      return false;
     }
 
-    if (!this.gameBoard.isGridAvailable(move)){
-      console.log("This grid is occupied.")
-      return false
+    if (!this.gameBoard.isGridAvailable(move)) {
+      console.log("This grid is occupied.");
+      return false;
     }
 
-    return true
+    return true;
   }
   shouldTerminate() {
-    if (true) {
+    var currentPlayer = this.playersQueue[0];
+    if (this.gameBoard.isWinner(currentPlayer.symbol)) {
+      console.log(`${currentPlayer.symbol} won!`);
+      return true;
+    } else if (this.gameBoard.isFull()) {
+      console.log("The board is full. This is a draw.");
+      return true;
     }
+    return false;
   }
 }
 
