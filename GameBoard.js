@@ -4,6 +4,7 @@ class GameBoard {
   constructor() {
     this.length = 3;
     this.grids = this.constructBoardGrids();
+    this.unoccupiedGridCount = this.length * this.length;
     this.stateCountersForRows = [...Array(this.length).keys()].map(
       index => new StateCounter(this.length)
     );
@@ -29,6 +30,7 @@ class GameBoard {
   makeMove(gridState, coordinate) {
     this.setGridState(gridState, coordinate);
     this.updateStateCount(gridState, coordinate);
+    this.unoccupiedGridCount -= 1;
   }
 
   setGridState(gridState, coordinate) {
@@ -76,6 +78,9 @@ class GameBoard {
     return counters.some(counter => counter.isMaxLimitReached(gridState))
   }
 
+  isFull(){
+      return this.unoccupiedGridCount === 0;
+  }
 }
 
 class StateCounter extends Map {
@@ -101,3 +106,4 @@ GameBoard.prototype.toString = function() {
   return stringBuffer.join("\n");
 };
 
+module.exports = GameBoard;
