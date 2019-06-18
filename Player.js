@@ -3,3 +3,5 @@ class Player {
         this.symbol = null;
     }
 }
+
+module.exports = Player;

@@ -1,17 +1,21 @@
 const GameBoard = require("./GameBoard");
 const readlineSync = require("readline-sync");
 const { GameBoardGrid, GridState } = require("./GameBoardGrid");
+const Player = require("./Player");
 
 class Game {
   constructor(gameId, player1, player2) {
     this.gameId = gameId;
     this.gameBoard = new GameBoard();
     this.playersQueue = [player1, player2];
+
+    this.start();
   }
 
   start() {
     this.shufflePlayersQueue();
     this.assignSymbolToPlayers();
+    console.log(this.playersQueue);
   }
 
   shufflePlayersQueue() {
@@ -32,7 +36,7 @@ class Game {
     do {
       this.displayGameState();
       var move = this.readPlayerMove();
-      console.log(`The move is ${move}`)
+      console.log(`The move is ${move}`);
       this.updateGameState(move);
     } while (!this.shouldTerminate());
   }
@@ -56,13 +60,33 @@ class Game {
   }
 
   updateGameState(move) {
+    var currentPlayer = this.playersQueue[0];
 
+    if (this.isMoveValid(move)){
+      this.gameBoard.makeMove(currentPlayer.symbol, move)
+      this.rotateQueue()
+    }
   }
 
+  isMoveValid(move){
+    if (!this.gameBoard.isCoordinateWithinBoundary(move)){
+      console.log("The move is out of boundary.")
+      return false
+    }
+
+    if (!this.gameBoard.isGridAvailable(move)){
+      console.log("This grid is occupied.")
+      return false
+    }
+
+    return true
+  }
   shouldTerminate() {
     if (true) {
     }
   }
 }
 
-new Game().run();
+var player1 = new Player();
+var player2 = new Player();
+new Game(123, player1, player2).run();

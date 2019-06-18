@@ -58,28 +58,40 @@ class GameBoard {
   updateStateCountInDiags(gridState, coordinate) {
     var [r, c] = coordinate;
     if (r == c) {
-        var currentCount = this.stateCountersForDiags[0].get(gridState);
+      var currentCount = this.stateCountersForDiags[0].get(gridState);
       this.stateCountersForDiags[0].set(gridState, currentCount + 1);
     }
 
     if (r == this.length - 1 - c) {
-        var currentCount = this.stateCountersForDiags[1].get(gridState);
+      var currentCount = this.stateCountersForDiags[1].get(gridState);
       this.stateCountersForDiags[1].set(gridState, currentCount + 1);
     }
   }
 
   isWinner(gridState) {
-    return this.isMaxLimitReachedInCounters(this.stateCountersForCols, gridState)||
-    this.isMaxLimitReachedInCounters(this.stateCountersForRows, gridState)||
-    this.isMaxLimitReachedInCounters(this.stateCountersForDiags, gridState)
+    return (
+      this.isMaxLimitReachedInCounters(this.stateCountersForCols, gridState) ||
+      this.isMaxLimitReachedInCounters(this.stateCountersForRows, gridState) ||
+      this.isMaxLimitReachedInCounters(this.stateCountersForDiags, gridState)
+    );
   }
 
-  isMaxLimitReachedInCounters(counters, gridState){
-    return counters.some(counter => counter.isMaxLimitReached(gridState))
+  isMaxLimitReachedInCounters(counters, gridState) {
+    return counters.some(counter => counter.isMaxLimitReached(gridState));
   }
 
-  isFull(){
-      return this.unoccupiedGridCount === 0;
+  isFull() {
+    return this.unoccupiedGridCount === 0;
+  }
+
+  isCoordinateWithinBoundary(coordinate) {
+    var [r,c] = coordinate;
+    return r >= 0 && r < 3 && c >= 0 && c < 3
+  }
+
+  isGridAvailable(coordinate) {
+    var [r,c] = coordinate;
+    return this.grids[r][c].state === GridState.UNOCCUPIED;
   }
 }
 
@@ -91,8 +103,8 @@ class StateCounter extends Map {
     this.set(GridState.CROSS, 0);
   }
 
-  isMaxLimitReached(gridState){
-      return this.get(gridState) === this.maxLimit;
+  isMaxLimitReached(gridState) {
+    return this.get(gridState) === this.maxLimit;
   }
 }
 
