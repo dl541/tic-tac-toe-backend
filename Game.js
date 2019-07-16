@@ -98,6 +98,5 @@ class Game {
   }
 }
 
-var player1 = new Player();
-var player2 = new Player();
-new Game(123, player1, player2).run();
+module.exports = Game;
+
